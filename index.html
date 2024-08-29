@@ -26,7 +26,7 @@
           display: block; 
       }
   </style>
-
+  
     <div id="unity-container">
       <canvas id="unity-canvas" width=auto height=auto></canvas>
       <div id="unity-loading-bar">
@@ -126,6 +126,9 @@
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
               }).catch((message) => {
                 alert(message);
               });
