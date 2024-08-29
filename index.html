@@ -8,26 +8,7 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
-  
-  <style>
-      html, body {
-          width: 100%;
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-      }
-      #unity-container {
-          width: 100%;
-          height: 100%;
-      }
-      #unity-canvas {
-          width: 100%;
-          height: 100%;
-          display: block; 
-      }
-  </style>
-    <div id="unity-container">
+    <div id="unity-container" style="width: 100%; height: 100%">
       <canvas id="unity-canvas" width=auto height=auto></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
@@ -126,6 +107,9 @@
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
               }).catch((message) => {
                 alert(message);
               });
