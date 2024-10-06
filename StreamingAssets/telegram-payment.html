@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Payment</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <h1>Purchase 5 Stars</h1>
+    <p>Price: $5.00</p>
+    <button id="payButton">Pay with Telegram</button>
+
+    <script>
+        Telegram.WebApp.ready(); // Initialize the Telegram Web App
+
+        // When the "Pay with Telegram" button is clicked
+        document.getElementById('payButton').onclick = function() {
+            Telegram.WebApp.pay({
+                provider_token: "1877036958:TEST:96f49063b925b6f268c41149a41979c8f4c30955", // Replace with your actual provider token
+                currency: "USD", // Currency code
+                prices: [{ label: "5 Stars", amount: 500 }], // Amount (500 = $5.00)
+                payload: "PAYLOAD_STARS_5", // Unique payload
+                title: "Buy 5 Stars",
+                description: "Purchase 5 Stars for your game"
+            });
+        };
+    </script>
+</body>
+</html>
