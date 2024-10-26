@@ -130,9 +130,7 @@
 					const userId = user.id;
 					const userName = user.first_name;
 					gameInstance.SendMessage('TelegramPayments', 'SetUserID', userId.toString());
-					gameInstance.SendMessage('TelegramPayments', 'SetUserName', userName);
-					
-					console.log(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+					gameInstance.SendMessage('TelegramPayments', 'SetUserName', userName);				
 				}
                 loadingBar.style.display = "none";
               }).catch((message) => {
