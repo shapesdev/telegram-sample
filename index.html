@@ -129,8 +129,8 @@
 				if (user && user.id) {
 					const userId = user.id;
 					const userName = user.first_name;
-					gameInstance.SendMessage('TelegramPayments', 'SetUserID', userId.toString());
-					gameInstance.SendMessage('TelegramPayments', 'SetUserName', userName);				
+					gameInstance.SendMessage('Telegram', 'SetUserID', userId.toString());
+					gameInstance.SendMessage('Telegram', 'SetUserName', userName);				
 				}
                 loadingBar.style.display = "none";
               }).catch((message) => {
