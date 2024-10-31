@@ -125,6 +125,15 @@
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
 				gameInstance = unityInstance;
+				if(/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+					gameInstance.SendMessage('MobileCheck', 'Check', "iOS");
+				}
+				else if(/Android/i.test(navigator.userAgent)) {
+					gameInstance.SendMessage('MobileCheck', 'Check', "Android");
+				}
+				else {
+					gameInstance.SendMessage('MobileCheck', 'Check', "Desktop");
+				}
 				const user = Telegram.WebApp.initDataUnsafe.user;
 				if (user && user.id) {
 					const userId = user.id;
