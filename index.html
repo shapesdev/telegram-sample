@@ -126,13 +126,13 @@
               }).then((unityInstance) => {
 				gameInstance = unityInstance;
 				if(/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-					gameInstance.SendMessage('MobileCheck', 'Check', "iOS");
+					gameInstance.SendMessage('Platform', 'Set', "IOS");
 				}
 				else if(/Android/i.test(navigator.userAgent)) {
-					gameInstance.SendMessage('MobileCheck', 'Check', "Android");
+					gameInstance.SendMessage('Platform', 'Set', "Android");
 				}
 				else {
-					gameInstance.SendMessage('MobileCheck', 'Check', "Desktop");
+					gameInstance.SendMessage('Platform', 'Set', "Desktop");
 				}
 				const user = Telegram.WebApp.initDataUnsafe.user;
 				if (user && user.id) {
