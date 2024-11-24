@@ -121,8 +121,7 @@
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-		  Telegram.WebApp.ready();
-		  Telegram.WebApp.sendData("webapp_ready");
+		  Telegram.WebApp.expand();
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
 				gameInstance = unityInstance;
