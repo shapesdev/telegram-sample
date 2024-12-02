@@ -108,9 +108,9 @@
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-		  Telegram.WebApp.expand();
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
+			    Telegram.WebApp.expand();
 				gameInstance = unityInstance;
 				if(/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 					gameInstance.SendMessage('Platform', 'Set', "IOS");
