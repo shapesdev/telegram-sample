@@ -6,26 +6,79 @@
     <title>Unity WebGL Player | Manor Defense Clicker</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-	<script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
   <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=1080 height=1920 tabindex="-1"></canvas>
+    <style>
+      html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+      }
+      #unity-container {
+          width: 100%;
+          height: 100%;
+      }
+      #unity-canvas {
+          width: 100%;
+          height: 100%;
+          display: block; 
+      }
+  </style>
+  
+    <div id="unity-container">
+      <canvas id="unity-canvas" width=auto height=auto></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Manor Defense Clicker</div>
-      </div>
     </div>
     <script>
+      var buildVersion = '1.1.0';
 
+      if (window.Telegram) {
+        Telegram.WebApp.ready();
+        
+        // Add early Telegram user capture
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        if (user && user.id) {
+          // Send early registration data
+          try {
+            fetch('/api/register-early-user', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId: user.id,
+                userName: user.first_name,
+                timestamp: new Date().toISOString(),
+                buildVersion: buildVersion
+              })
+            });
+          } catch (e) {
+            console.error('Failed to register early user:', e);
+          }
+        }
+
+        // Force reload on each launch
+        if (window.localStorage) {
+          const lastVersion = localStorage.getItem('buildVersion');
+          if (lastVersion !== buildVersion) {
+            localStorage.setItem('buildVersion', buildVersion);
+            // Clear application cache if possible
+            if (window.applicationCache && window.applicationCache.swapCache) {
+              window.applicationCache.swapCache();
+            }
+            // Force reload
+            window.location.reload(true);
+          }
+        }
+      }
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
@@ -62,13 +115,13 @@
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/Build.loader.js";
       var config = {
-        dataUrl: buildUrl + "/Build.data",
-        frameworkUrl: buildUrl + "/Build.framework.js",
-        codeUrl: buildUrl + "/Build.wasm",
+        dataUrl: buildUrl + "/Build.data.unityweb",
+        frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
+        codeUrl: buildUrl + "/Build.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Uraga",
         productName: "Manor Defense Clicker",
-        productVersion: "0.1.24",
+        productVersion: buildVersion,
         showBanner: unityShowBanner,
       };
 
@@ -97,20 +150,21 @@
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        canvas.style.width = "1080px";
-        canvas.style.height = "1920px";
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
       }
 
       canvas.style.background = "url('" + buildUrl + "/Build.jpg') center / cover";
       loadingBar.style.display = "block";
-
+	  
       var script = document.createElement("script");
       script.src = loaderUrl;
+      script.setAttribute('nonce', Date.now().toString());
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
+		  Telegram.WebApp.expand();
           progressBarFull.style.width = 100 * progress + "%";
               }).then((unityInstance) => {
-			    Telegram.WebApp.expand();
 				gameInstance = unityInstance;
 				if(/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
 					gameInstance.SendMessage('Platform', 'Set', "IOS");
@@ -121,17 +175,18 @@
 				else {
 					gameInstance.SendMessage('Platform', 'Set', "Desktop");
 				}
-				const user = Telegram.WebApp.initDataUnsafe.user;
-				if (user && user.id) {
-					const userId = user.id;
-					const userName = user.first_name;
-					gameInstance.SendMessage('Telegram', 'SetUserID', "7258699953");
-					gameInstance.SendMessage('Telegram', 'SetUserName', "Shapes");				
-				}
+				
+				console.log("11111");
+				
+				const initDataString = Telegram.WebApp.initData;
+				
+				console.log("22222");
+				
+				gameInstance.SendMessage('Telegram', 'LoadInitData', initDataString);
+				
+				console.log("33333");
+				
                 loadingBar.style.display = "none";
-                fullscreenButton.onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
               }).catch((message) => {
                 alert(message);
               });
